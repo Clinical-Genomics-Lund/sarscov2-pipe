@@ -12,6 +12,7 @@ wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/typing/SARS-CoV-
 wget https://github.com/artic-network/primer-schemes/raw/master/nCoV-2019/V3/nCoV-2019.reference.fasta
 wget https://github.com/artic-network/primer-schemes/raw/master/nCoV-2019/V3/nCoV-2019.primer.bed
 wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/typing/MN908947.3.gff
+sed '/^$/d' MN908947.3.gff
 cd -
 
 # Download some additional scripts
