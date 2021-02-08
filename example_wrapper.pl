@@ -10,6 +10,11 @@ my $N_PARALLEL = $ARGV[2];
 
 my @files = glob("$INDIR/*_R1_001.fastq.gz");
 
+print "source $SCRIPT_ROOT/miniconda3/etc/profile.d/conda.sh\n";
+print "conda activate pangolin\n";
+print "pangolin --update\n";
+
+
 print "mkdir -p $OUTDIR\n";
 print "cd $OUTDIR\n";
 my $i = 0;
@@ -24,7 +29,6 @@ foreach my $fq1 (@files) {
 print "wait\n";
 
 print "cat *.consensus.fa > all.consensus.fa\n";
-print "source $SCRIPT_ROOT/miniconda3/etc/profile.d/conda.sh\n";
 print "conda activate pangolin\n";
 print "pangolin all.consensus.fa -o pangolin_all\n";
 print "cp pangolin_all/lineage_report.csv ./pangolin_all.csv\n";
