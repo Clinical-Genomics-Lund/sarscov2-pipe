@@ -19,6 +19,7 @@ print "mkdir -p $OUTDIR\n";
 print "cd $OUTDIR\n";
 my $i = 0;
 foreach my $fq1 (@files) {
+    next if basename($fq1) =~ /^Undetermined_/;
     my $fq2 = $fq1;
     $fq2 =~ s/_R1_/_R2_/;
     my $id = (split /_/, basename($fq1))[0];
