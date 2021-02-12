@@ -29,11 +29,17 @@ if [ ! -f "${REF_FASTA}.bwt" ]; then
 fi
 
 if [ ! -f "$ID.trim.sort.bam" ]; then
-    bwa mem -t 4 $REF_FASTA $FQ1 $FQ2 | samtools sort | samtools view -F 4 -o $ID.sort.bam
+    bwa mem -t 4 $REF_FASTA $FQ1 $FQ2 | samtools sort | tee $ID.qc.bam | samtools view -F 4 -o $ID.sort.bam
+    samtools flagstat $ID.qc.bam > $ID.flagstat
     ivar trim -e -i $ID.sort.bam -b $PRIMER_BED -p $ID.trim -m 30 -q 20
     samtools sort $ID.trim.bam -o $ID.trim.sort.bam
     samtools index $ID.trim.sort.bam
-    rm $ID.sort.bam $ID.sort.bam.bai $ID.trim.bam
+    rm $ID.sort.bam $ID.sort.bam.bai $ID.trim.bam $ID.qc.bam
+fi
+
+# Create detailed depth data
+if [ ! -f "$ID.depth" ]; then
+    sambamba depth base -c0 $ID.trim.sort.bam -o $ID.depth
 fi
 
 # Create consensus sequence

@@ -19,6 +19,7 @@ cd -
 mkdir -p bin && cd bin
 wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/bin/type_vcf.py
 wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/bin/qc.py
+wget https://www.epicov.org/content/gisaid_uploader
 cd -
 
 
@@ -36,7 +37,7 @@ conda config --add channels bioconda
 conda config --add channels conda-forge
 
 ## Setup iVar/bcftools conda environment
-conda create --name ivar ivar=1.3 bcftools=1.10.2 bwa=0.7.17 python=3.9 -q -y
+conda create --name ivar ivar=1.3 bcftools=1.10.2 bwa=0.7.17 python=3.9 sambamba=0.8.0 -q -y
 conda activate ivar
 pip install bio==0.3.0 pandas==1.2.1 matplotlib==3.3.4 PyVCF==0.6.8 PyYAML==5.4.1
 
