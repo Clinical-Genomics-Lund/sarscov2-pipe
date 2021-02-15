@@ -13,6 +13,8 @@ wget https://github.com/artic-network/primer-schemes/raw/master/nCoV-2019/V3/nCo
 wget https://github.com/artic-network/primer-schemes/raw/master/nCoV-2019/V3/nCoV-2019.primer.bed
 wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/typing/MN908947.3.gff
 sed -i '/^$/d' MN908947.3.gff
+grep -v '^###' MN908947.3.gff > MN908947.3.gff.mod
+mv MN908947.3.gff.mod MN908947.3.gff
 cd -
 
 # Download some additional scripts
@@ -40,11 +42,10 @@ conda config --add channels conda-forge
 conda create --name ivar ivar=1.3 bcftools=1.10.2 bwa=0.7.17 python=3.9 sambamba=0.8.0 freebayes=1.3.5 -q -y
 conda activate ivar
 pip install bio==0.3.0 pandas==1.2.1 matplotlib==3.3.4 PyVCF==0.6.8 PyYAML==5.4.1
-
-ivar version
-bcftools --version
 conda deactivate
 
+# Setup VEP conda environment
+conda create --name vep ensembl-vep=102.0 -q -y
 
 # Install pangolin
 git clone https://github.com/cov-lineages/pangolin.git

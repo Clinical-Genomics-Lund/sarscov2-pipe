@@ -23,6 +23,12 @@ MIN_QUAL_VAR=20
 
 conda activate ivar
 
+# bgzip gff in needed
+if [ ! -f "${GFF}.gz" ]; then
+    bgzip -i -f -c $GFF > $GFF.gz
+fi
+
+
 # Build BWA index if necessary
 if [ ! -f "${REF_FASTA}.bwt" ]; then
     bwa index $REF_FASTA
@@ -56,7 +62,11 @@ fi
 if [ ! -f "$ID.freebayes.vcf" ]; then
     freebayes -p 1 --min-coverage $MIN_DEPTH --min-base-quality $MIN_QUAL_VAR -f $REF_FASTA -F $MIN_FREQ -m 60 $ID.trim.sort.bam > $ID.freebayes.raw.vcf
     bcftools norm $ID.freebayes.raw.vcf -f $REF_FASTA -o $ID.freebayes.norm.vcf
-    bcftools csq -v 0 -f $REF_FASTA -g $GFF > $ID.freebayes.vcf
+    bcftools csq -v 0 -f $REF_FASTA -g $GFF $ID.freebayes.norm.vcf > $ID.freebayes.vcf
+    bgzip -i -f $ID.freebayes.norm.vcf
+    conda activate vep
+    vep -i $ID.freebayes.norm.vcf.gz --gff $GFF.gz --fasta $REF_FASTA -o $ID.freebayes.vep.vcf --vcf --force_overwrite --no_stats --distance 10 --hgvs
+    conda activate ivar
 fi
 
 # Create VCF and annotate variants
@@ -71,7 +81,6 @@ fi
 
 # Run pangolin
 if [ ! "$NO_PANGOLIN" = "NO_PANGOLIN" ]; then
-    echo HELLO
     conda activate pangolin
     pangolin $ID.consensus.fa -o $ID.pangolin_tmp
     cp $ID.pangolin_tmp/lineage_report.csv ./$ID.pangolin.csv
