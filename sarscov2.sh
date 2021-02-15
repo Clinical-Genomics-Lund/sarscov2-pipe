@@ -52,6 +52,13 @@ if [ ! -f "$ID.variants.tsv" ]; then
     samtools mpileup -A -d 0 --reference $REF_FASTA -B -Q 0 $ID.trim.sort.bam | ivar variants -g $GFF -r $REF_FASTA -m $MIN_DEPTH -p $ID.variants -q $MIN_QUAL_VAR -t $MIN_FREQ
 fi
 
+# Call variants with freebayes
+if [ ! -f "$ID.freebayes.vcf" ]; then
+    freebayes -p 1 --min-coverage $MIN_DEPTH --min-base-quality $MIN_QUAL_VAR -f $REF_FASTA -F $MIN_FREQ -m 60 $ID.trim.sort.bam > $ID.freebayes.raw.vcf
+    bcftools norm $ID.freebayes.raw.vcf -f $REF_FASTA -o $ID.freebayes.norm.vcf
+    bcftools csq -v 0 -f $REF_FASTA -g $GFF > $ID.freebayes.vcf
+fi
+
 # Create VCF and annotate variants
 if [ ! -f "$ID.variants.vcf" ]; then
     python $TYPE_VCF_PY -i $ID -y $TYPING_YAML -ov $ID.variants.vcf -ot $ID.typing -os $ID.summary.csv -af $MIN_FREQ -dp $MIN_DEPTH -t $ID.variants.tsv $GFF $REF_FASTA
