@@ -4,19 +4,17 @@ set -e
 DIR=`dirname $0`
 source $DIR/miniconda3/etc/profile.d/conda.sh
 
-
 PRIMER_BED="${DIR}/ref/nCoV-2019.primer.bed"
 REF_FASTA="${DIR}/ref/nCoV-2019.reference.fasta"
 GFF="${DIR}/ref/MN908947.3.gff"
 TYPING_YAML="${DIR}/ref/SARS-CoV-2.types.yaml"
-
-TYPE_VCF_PY="${DIR}/bin/type_vcf.py"
 QC_PY="${DIR}/bin/qc.py"
 
 FQ1=$1
 FQ2=$2
 ID=$3
 NO_PANGOLIN=$4
+
 MIN_DEPTH=10
 MIN_FREQ=0.75
 MIN_QUAL_VAR=20
@@ -28,12 +26,12 @@ if [ ! -f "${GFF}.gz" ]; then
     bgzip -i -f -c $GFF > $GFF.gz
 fi
 
-
 # Build BWA index if necessary
 if [ ! -f "${REF_FASTA}.bwt" ]; then
     bwa index $REF_FASTA
 fi
 
+# Align and trim primers
 if [ ! -f "$ID.trim.sort.bam" ]; then
     bwa mem -t 4 $REF_FASTA $FQ1 $FQ2 | samtools sort | tee $ID.qc.bam | samtools view -F 4 -o $ID.sort.bam
     samtools flagstat $ID.qc.bam > $ID.flagstat
