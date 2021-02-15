@@ -53,25 +53,20 @@ if [ ! -f "$ID.consensus.fa" ]; then
     samtools mpileup -aa -A -B -d 6000000 -Q 0 --reference $REF_FASTA $ID.trim.sort.bam | ivar consensus -p $ID.consensus -n N -m $MIN_DEPTH -t $MIN_FREQ
 fi
 
-# Extract variants
-if [ ! -f "$ID.variants.tsv" ]; then
-    samtools mpileup -A -d 0 --reference $REF_FASTA -B -Q 0 $ID.trim.sort.bam | ivar variants -g $GFF -r $REF_FASTA -m $MIN_DEPTH -p $ID.variants -q $MIN_QUAL_VAR -t $MIN_FREQ
-fi
-
 # Call variants with freebayes
 if [ ! -f "$ID.freebayes.vcf" ]; then
     freebayes -p 1 --min-coverage $MIN_DEPTH --min-base-quality $MIN_QUAL_VAR -f $REF_FASTA -F $MIN_FREQ -m 60 $ID.trim.sort.bam > $ID.freebayes.raw.vcf
-    bcftools norm $ID.freebayes.raw.vcf -f $REF_FASTA -o $ID.freebayes.norm.vcf
-    bcftools csq -v 0 -f $REF_FASTA -g $GFF $ID.freebayes.norm.vcf > $ID.freebayes.vcf
-    bgzip -i -f $ID.freebayes.norm.vcf
-    conda activate vep
-    vep -i $ID.freebayes.norm.vcf.gz --gff $GFF.gz --fasta $REF_FASTA -o $ID.freebayes.vep.vcf --vcf --force_overwrite --no_stats --distance 10 --hgvs
-    conda activate ivar
+    bcftools norm $ID.freebayes.raw.vcf -f $REF_FASTA -o $ID.freebayes.vcf
+    rm $ID.freebayes.raw.vcf
 fi
 
-# Create VCF and annotate variants
-if [ ! -f "$ID.variants.vcf" ]; then
-    python $TYPE_VCF_PY -i $ID -y $TYPING_YAML -ov $ID.variants.vcf -ot $ID.typing -os $ID.summary.csv -af $MIN_FREQ -dp $MIN_DEPTH -t $ID.variants.tsv $GFF $REF_FASTA
+# Annotate variants with VEP
+if [ ! -f "$ID.freebayes.vep.vcf" ]; then
+    bgzip -i -f $ID.freebayes.vcf
+    conda activate vep
+    vep -i $ID.freebayes.vcf.gz --gff $GFF.gz --fasta $REF_FASTA -o $ID.freebayes.vep.vcf --vcf --force_overwrite --no_stats --distance 10 --hgvs
+    conda activate ivar
+    rm $ID.freebayes.vcf.gz*
 fi
 
 # Generate QC data
