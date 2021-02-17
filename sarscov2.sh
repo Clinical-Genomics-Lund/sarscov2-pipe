@@ -59,7 +59,7 @@ fi
 
 # Annotate variants with VEP
 if [ ! -f "$ID.freebayes.vep.vcf" ]; then
-    bgzip -i -f $ID.freebayes.vcf
+    bgzip -i -f -c $ID.freebayes.vcf > $ID.freebayes.vcf.gz
     conda activate vep
     vep -i $ID.freebayes.vcf.gz --format vcf --gff $GFF.gz --fasta $REF_FASTA -o $ID.freebayes.vep.vcf --vcf --force_overwrite --no_stats --distance 10 --hgvs
     conda activate ivar
