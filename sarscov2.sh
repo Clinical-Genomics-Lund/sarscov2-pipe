@@ -62,7 +62,7 @@ fi
 if [ ! -f "$ID.freebayes.vep.vcf" ]; then
     bgzip -i -f $ID.freebayes.vcf
     conda activate vep
-    vep -i $ID.freebayes.vcf.gz --gff $GFF.gz --fasta $REF_FASTA -o $ID.freebayes.vep.vcf --vcf --force_overwrite --no_stats --distance 10 --hgvs
+    vep -i $ID.freebayes.vcf.gz --format vcf --gff $GFF.gz --fasta $REF_FASTA -o $ID.freebayes.vep.vcf --vcf --force_overwrite --no_stats --distance 10 --hgvs
     conda activate ivar
     rm $ID.freebayes.vcf.gz*
 fi
