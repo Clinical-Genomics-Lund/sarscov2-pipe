@@ -17,6 +17,7 @@ NO_PANGOLIN=$4
 MIN_DEPTH=10
 MIN_FREQ=0.75
 MIN_QUAL_VAR=20
+MAX_READPAIRS=1000000
 
 conda activate ivar
 
@@ -30,9 +31,14 @@ if [ ! -f "${REF_FASTA}.bwt" ]; then
     bwa index $REF_FASTA
 fi
 
+if [ ! -f "${ID}_subsample_R1_001.fastq.gz" ]; then
+    seqtk sample -s 1314 $FQ1 $MAX_READPAIRS > ${ID}_subsample_R1_001.fastq.gz
+    seqtk sample -s 1314 $FQ2 $MAX_READPAIRS > ${ID}_subsample_R2_001.fastq.gz
+fi
+
 # Align and trim primers
 if [ ! -f "$ID.trim.sort.bam" ]; then
-    bwa mem -t 4 $REF_FASTA $FQ1 $FQ2 | samtools sort | tee $ID.qc.bam | samtools view -F 4 -o $ID.sort.bam
+    bwa mem -t 4 $REF_FASTA ${ID}_subsample_R1_001.fastq.gz ${ID}_subsample_R2_001.fastq.gz | samtools sort | tee $ID.qc.bam | samtools view -F 4 -o $ID.sort.bam
     samtools flagstat $ID.qc.bam > $ID.flagstat
     ivar trim -e -i $ID.sort.bam -b $PRIMER_BED -p $ID.trim -m 30 -q 20
     samtools sort $ID.trim.bam -o $ID.trim.sort.bam
