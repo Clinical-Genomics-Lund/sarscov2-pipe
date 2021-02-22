@@ -83,7 +83,7 @@ if [ ! -f "${ID}_R1_001.fastq.gz" ]; then
 fi
 
 # Run pangolin
-if [ ! "$NO_PANGOLIN" = "NO_PANGOLIN" ]; then
+if [ ! "$NO_PANGOLIN" = "NO_PANGOLIN" ] && [ ! -f "$ID.pangolin.csv" ]; then
     conda activate pangolin
     pangolin $ID.consensus.fa -o $ID.pangolin_tmp
     cp $ID.pangolin_tmp/lineage_report.csv ./$ID.pangolin.csv
