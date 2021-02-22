@@ -32,8 +32,9 @@ if [ ! -f "${REF_FASTA}.bwt" ]; then
 fi
 
 if [ ! -f "${ID}_subsample_R1_001.fastq.gz" ]; then
-    seqtk sample -s 1314 $FQ1 $MAX_READPAIRS > ${ID}_subsample_R1_001.fastq.gz
-    seqtk sample -s 1314 $FQ2 $MAX_READPAIRS > ${ID}_subsample_R2_001.fastq.gz
+    seqtk sample -s 1314 $FQ1 $MAX_READPAIRS | gzip -c > ${ID}_subsample_R1_001.fastq.gz &
+    seqtk sample -s 1314 $FQ2 $MAX_READPAIRS | gzip -c > ${ID}_subsample_R2_001.fastq.gz &
+    wait
 fi
 
 # Align and trim primers
