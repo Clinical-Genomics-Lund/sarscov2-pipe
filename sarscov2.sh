@@ -77,6 +77,11 @@ if [ ! -f "$ID.qc.csv" ]; then
     python $QC_PY --illumina --outfile $ID.qc.csv --sample $ID --ref $REF_FASTA --bam $ID.trim.sort.bam --fasta $ID.consensus.fa
 fi
 
+# Create fastq files for distribution
+if [ ! -f "${ID}_R1_001.fastq.gz" ]; then
+    samtools fastq -1 ${ID}_R1_001.fastq.gz -2 ${ID}_R2_001.fastq.gz $ID.trim.sort.bam
+fi
+
 # Run pangolin
 if [ ! "$NO_PANGOLIN" = "NO_PANGOLIN" ]; then
     conda activate pangolin
