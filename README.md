@@ -1,12 +1,15 @@
 # A boring Sars-Cov-2 pipeline
 
-A pipeline for analysing Illumina Sars-Cov-2 WGS data (ARTIC v3) from  built using the priciples of Choose Boring Technology and KISS. Mostly based on iVar (https://github.com/andersen-lab/ivar) and Pangolin (https://github.com/cov-lineages/pangolin) with some scripts and files stolen from https://github.com/connor-lab/ncov2019-artic-nf/
+A pipeline for analysing Illumina Sars-Cov-2 WGS data (ARTIC v3) built using the priciples of Choose Boring Technology and KISS. Mostly based on [iVar](https://github.com/andersen-lab/ivar), [Pangolin](https://github.com/cov-lineages/pangolin) and [freebayes](https://github.com/freebayes/freebayes) with some scripts and files stolen from https://github.com/connor-lab/ncov2019-artic-nf/
 
 Does the following:
+* Optionally subsamples the data
 * Generates consensus sequence
-* Calls variants
+* Calls majority variants with freebayes
+* Annotates variants with VEP
 * Determines pangolin type
 * Generates QC data
+* Generates fastqs without host contamination and primers, for distribution
 
 ## Requirements
 
