@@ -47,6 +47,12 @@ conda deactivate
 # Setup VEP conda environment
 conda create --name vep ensembl-vep=102.0 -q -y
 
+# Setup nextclade conda environment
+conda create --name nextclade nodejs -q -y
+conda activate nextclade
+npm install --global @neherlab/nextclade
+conda deactivate
+
 # Install pangolin
 git clone https://github.com/cov-lineages/pangolin.git
 cd pangolin

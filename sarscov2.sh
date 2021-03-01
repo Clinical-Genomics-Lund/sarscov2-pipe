@@ -83,6 +83,12 @@ if [ ! -f "${ID}_R1_001.fastq.gz" ]; then
     samtools fastq -1 ${ID}_R1_001.fastq.gz -2 ${ID}_R2_001.fastq.gz $ID.trim.sort.bam
 fi
 
+# Run nextclade
+if [ ! -f "$ID.nextclade.tsv" ] && [ ! -f "$ID.auspice.json" ]; then
+    conda activate nextclade
+    nextclade --input-fasta $ID.consensus.fa --output-tsv $ID.nextclade.tsv --output-tree $ID.auspice.json
+fi
+
 # Run pangolin
 if [ ! "$NO_PANGOLIN" = "NO_PANGOLIN" ] && [ ! -f "$ID.pangolin.csv" ]; then
     conda activate pangolin
@@ -90,3 +96,4 @@ if [ ! "$NO_PANGOLIN" = "NO_PANGOLIN" ] && [ ! -f "$ID.pangolin.csv" ]; then
     cp $ID.pangolin_tmp/lineage_report.csv ./$ID.pangolin.csv
     rm -rf $ID.pangolin_tmp
 fi
+
