@@ -31,7 +31,8 @@ if [ ! -f "${REF_FASTA}.bwt" ]; then
     bwa index $REF_FASTA
 fi
 
-if [ ! -f "${ID}_subsample_R1_001.fastq.gz" ]; then
+# Subsample fastqs to at most $MAX_READPAIRS
+if [ ! -f "${ID}_subsample_R1_001.fastq.gz" ] && [ ! -f "$ID.trim.sort.bam" ]; then
     seqtk sample -s 1314 $FQ1 $MAX_READPAIRS | gzip -c > ${ID}_subsample_R1_001.fastq.gz &
     seqtk sample -s 1314 $FQ2 $MAX_READPAIRS | gzip -c > ${ID}_subsample_R2_001.fastq.gz &
     wait
