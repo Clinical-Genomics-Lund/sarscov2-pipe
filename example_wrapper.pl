@@ -30,10 +30,12 @@ foreach my $fq1 (@files) {
 }
 print "wait\n";
 
-print "cat *.consensus.fa > all.consensus.fa\n";
-print "conda activate pangolin\n";
-print "pangolin all.consensus.fa -o pangolin_all\n";
-print "cp pangolin_all/lineage_report.csv ./pangolin_all.csv\n";
+unless( -e $OUTDIR.'/pangolin_all.csv' ) {
+    print "cat *.consensus.fa > all.consensus.fa\n";
+    print "conda activate pangolin\n";
+    print "pangolin all.consensus.fa -o pangolin_all\n";
+    print "cp pangolin_all/lineage_report.csv ./pangolin_all.csv\n";
+}
 
 if( $POST_ANALYSIS_SCRIPT ) {
     print $ARGV[3]." .";
