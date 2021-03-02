@@ -7,6 +7,7 @@ my $SCRIPT_ROOT = File::Spec->rel2abs(dirname($0));
 my $INDIR = $ARGV[0];
 my $OUTDIR = $ARGV[1];
 my $N_PARALLEL = $ARGV[2];
+my $POST_ANALYSIS_SCRIPT = ($ARGV[3] or 0);
 
 my @files = glob("$INDIR/*_R1_001.fastq.gz");
 
@@ -34,3 +35,6 @@ print "conda activate pangolin\n";
 print "pangolin all.consensus.fa -o pangolin_all\n";
 print "cp pangolin_all/lineage_report.csv ./pangolin_all.csv\n";
 
+if( $POST_ANALYSIS_SCRIPT ) {
+    print $ARGV[3]." .";
+}
