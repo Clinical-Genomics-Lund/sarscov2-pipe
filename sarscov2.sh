@@ -48,14 +48,19 @@ if [ ! -f "$ID.trim.sort.bam" ]; then
     rm $ID.sort.bam $ID.sort.bam.bai $ID.trim.bam $ID.qc.bam
 fi
 
+# Create fastq files for distribution
+if [ ! -f "${ID}_R1_001.fastq.gz" ]; then
+    samtools fastq -1 ${ID}_R1_001.fastq.gz -2 ${ID}_R2_001.fastq.gz $ID.trim.sort.bam &
+fi
+
 # Create detailed depth data
 if [ ! -f "$ID.depth" ]; then
-    sambamba depth base -c0 $ID.trim.sort.bam -o $ID.depth
+    sambamba depth base -c0 $ID.trim.sort.bam -o $ID.depth &
 fi
 
 # Create consensus sequence
 if [ ! -f "$ID.consensus.fa" ]; then
-    samtools mpileup -aa -A -B -d 6000000 -Q 0 --reference $REF_FASTA $ID.trim.sort.bam | ivar consensus -p $ID.consensus -n N -m $MIN_DEPTH -t $MIN_FREQ
+    samtools mpileup -aa -A -B -d 6000000 -Q 0 --reference $REF_FASTA $ID.trim.sort.bam | ivar consensus -p $ID.consensus -n N -m $MIN_DEPTH -t $MIN_FREQ &
 fi
 
 # Call variants with freebayes
@@ -76,22 +81,20 @@ fi
 
 # Generate QC data
 if [ ! -f "$ID.qc.csv" ]; then
+    wait
     python $QC_PY --illumina --outfile $ID.qc.csv --sample $ID --ref $REF_FASTA --bam $ID.trim.sort.bam --fasta $ID.consensus.fa
-fi
-
-# Create fastq files for distribution
-if [ ! -f "${ID}_R1_001.fastq.gz" ]; then
-    samtools fastq -1 ${ID}_R1_001.fastq.gz -2 ${ID}_R2_001.fastq.gz $ID.trim.sort.bam
 fi
 
 # Run nextclade
 if [ ! -f "$ID.nextclade.tsv" ] && [ ! -f "$ID.auspice.json" ]; then
+    wait
     conda activate nextclade
     nextclade --input-fasta $ID.consensus.fa --output-tsv $ID.nextclade.tsv --output-tree $ID.auspice.json
 fi
 
 # Run pangolin
 if [ ! "$NO_PANGOLIN" = "NO_PANGOLIN" ] && [ ! -f "$ID.pangolin.csv" ]; then
+    wait
     conda activate pangolin
     pangolin $ID.consensus.fa -o $ID.pangolin_tmp
     cp $ID.pangolin_tmp/lineage_report.csv ./$ID.pangolin.csv
