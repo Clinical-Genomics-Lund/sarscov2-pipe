@@ -2,6 +2,7 @@
 use strict;
 use File::Basename qw(basename dirname);
 use File::Spec;
+use Cwd qw(abs_path);
 
 my $SCRIPT_ROOT = File::Spec->rel2abs(dirname($0));
 my $INDIR = $ARGV[0];
@@ -38,5 +39,5 @@ unless( -e $OUTDIR.'/pangolin_all.csv' ) {
 }
 
 if( $POST_ANALYSIS_SCRIPT ) {
-    print $ARGV[3]." .";
+    print $ARGV[3]." ".abs_path($OUTDIR);
 }
