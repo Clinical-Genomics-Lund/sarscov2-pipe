@@ -24,6 +24,7 @@ conda activate ivar
 # bgzip gff in needed
 if [ ! -f "${GFF}.gz" ]; then
     bgzip -i -f -c $GFF > $GFF.gz
+    tabix -f $GFF.gz
 fi
 
 # Build BWA index if necessary
