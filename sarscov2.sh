@@ -6,6 +6,7 @@ source $DIR/miniconda3/etc/profile.d/conda.sh
 
 PRIMER_BED=${5:-"${DIR}/ref/nCoV-2019.primer.bed"}
 REF_FASTA="${DIR}/ref/nCoV-2019.reference.fasta"
+REF_NEXTCLADE="${DIR}/ref/nextclade/sars-cov-2_MN908947"
 GFF="${DIR}/ref/MN908947.3.gff"
 QC_PY="${DIR}/bin/qc.py"
 
@@ -83,14 +84,14 @@ fi
 # Generate QC data
 if [ ! -f "$ID.qc.csv" ]; then
     wait
-    python $QC_PY --illumina --outfile $ID.qc.csv --sample $ID --ref $REF_FASTA --bam $ID.trim.sort.bam --fasta $ID.consensus.fa
+    env -u DISPLAY python $QC_PY --illumina --outfile $ID.qc.csv --sample $ID --ref $REF_FASTA --bam $ID.trim.sort.bam --fasta $ID.consensus.fa
 fi
 
 # Run nextclade
 if [ ! -f "$ID.nextclade.tsv" ] && [ ! -f "$ID.auspice.json" ]; then
     wait
     conda activate nextclade
-    nextclade --input-fasta $ID.consensus.fa --output-tsv $ID.nextclade.tsv --output-tree $ID.auspice.json
+    nextclade --in-order --input-fasta $ID.consensus.fa --input-dataset $REF_NEXTCLADE --output-tsv $ID.nextclade.tsv --output-tree $ID.auspice.json
 fi
 
 # Run pangolin
