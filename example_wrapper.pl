@@ -39,5 +39,5 @@ unless( -e $OUTDIR.'/pangolin_all.csv' ) {
 }
 
 if( $POST_ANALYSIS_SCRIPT ) {
-    print $ARGV[3]." ".abs_path($OUTDIR);
+    print $ARGV[3]." ".abs_path($OUTDIR)."\n";
 }
