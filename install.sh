@@ -41,16 +41,16 @@ conda config --add channels conda-forge
 ## Setup iVar/bcftools conda environment
 conda create --name ivar ivar=1.3 bcftools=1.10.2 bwa=0.7.17 python=3.9 sambamba=0.8.0 freebayes=1.3.5 seqtk=1.3 -q -y
 conda activate ivar
-pip install bio==0.3.0 pandas==1.2.1 matplotlib==3.3.4 PyVCF==0.6.8 PyYAML==5.4.1
+pip install bio pandas==1.2.1 matplotlib==3.3.4 PyVCF==0.6.8 PyYAML==5.4.1
 conda deactivate
 
 # Setup VEP conda environment
 conda create --name vep ensembl-vep=102.0 -q -y
 
 # Setup nextclade conda environment
-conda create --name nextclade nodejs -q -y
+conda create --name nextclade nextclade=1.3.0 -q -y
 conda activate nextclade
-npm install --global @neherlab/nextclade
+nextclade dataset get --name='sars-cov-2' --reference='MN908947' --output-dir='ref/nextclade/sars-cov-2_MN908947'
 conda deactivate
 
 # Install pangolin
@@ -58,5 +58,5 @@ git clone https://github.com/cov-lineages/pangolin.git
 cd pangolin
 conda env create -f environment.yml -q
 conda activate pangolin
-python setup.py install
+pip install .
 cd -
