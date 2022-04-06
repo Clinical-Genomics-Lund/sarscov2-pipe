@@ -9,12 +9,18 @@ fi
 # Download reference files
 mkdir -p ref && cd ref
 wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/typing/SARS-CoV-2.types.yaml
-wget https://github.com/artic-network/primer-schemes/raw/master/nCoV-2019/V3/nCoV-2019.reference.fasta
-wget https://github.com/artic-network/primer-schemes/raw/master/nCoV-2019/V3/nCoV-2019.primer.bed
 wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/typing/MN908947.3.gff
 sed -i '/^$/d' MN908947.3.gff
 grep -v '^###' MN908947.3.gff > MN908947.3.gff.mod
 mv MN908947.3.gff.mod MN908947.3.gff
+cd -
+mkdir -p ref/v3 && cd ref/v3
+wget https://raw.githubusercontent.com/artic-network/primer-schemes/master/nCoV-2019/V3/nCoV-2019.reference.fasta
+wget https://raw.githubusercontent.com/artic-network/primer-schemes/master/nCoV-2019/V3/nCoV-2019.primer.bed
+cd -
+mkdir -p ref/v4.1 && cd ref/v4.1
+wget https://raw.githubusercontent.com/artic-network/primer-schemes/master/nCoV-2019/V4.1/SARS-CoV-2.reference.fasta
+wget https://raw.githubusercontent.com/artic-network/primer-schemes/master/nCoV-2019/V4.1/SARS-CoV-2.primer.bed
 cd -
 
 # Download some additional scripts
@@ -39,6 +45,8 @@ source miniconda3/etc/profile.d/conda.sh
 conda config --add channels defaults
 conda config --add channels bioconda
 conda config --add channels conda-forge
+
+conda update -q -y -n base -c defaults conda
 
 ## Setup iVar/bcftools conda environment
 conda create --name ivar ivar=1.3 bcftools=1.10.2 bwa=0.7.17 python=3.9 sambamba=0.8.0 freebayes=1.3.5 seqtk=1.3 pyvcf=0.6.8 -q -y
