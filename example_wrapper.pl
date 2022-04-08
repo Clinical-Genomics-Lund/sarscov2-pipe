@@ -12,10 +12,13 @@ my $POST_ANALYSIS_SCRIPT = ($ARGV[3] or 0);
 
 my @files = glob("$INDIR/*_R1_001.fastq.gz");
 
-print "source $SCRIPT_ROOT/miniconda3/etc/profile.d/conda.sh\n";
-print "conda activate pangolin\n";
+# print "source $SCRIPT_ROOT/miniconda3/etc/profile.d/conda.sh\n";
+# print "conda activate pangolin\n";
+# print "pangolin --update\n";
+print "export MAMBA_ROOT_PREFIX=$SCRIPT_ROOT/mamba\n";
+print "eval \"\$(\$MAMBA_ROOT_PREFIX/bin/micromamba shell hook -s posix)\"\n";
+print "micromamba activate pangolin\n";
 print "pangolin --update\n";
-
 
 print "mkdir -p $OUTDIR\n";
 print "cd $OUTDIR\n";

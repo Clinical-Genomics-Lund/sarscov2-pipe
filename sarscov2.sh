@@ -2,7 +2,9 @@
 set -e
 
 DIR=`dirname $0`
-source $DIR/miniconda3/etc/profile.d/conda.sh
+# source $DIR/miniconda3/etc/profile.d/conda.sh
+export MAMBA_ROOT_PREFIX=$DIR/mamba
+eval "$(${MAMBA_ROOT_PREFIX}/bin/micromamba shell hook -s posix)"
 
 PRIMER_BED=${5:-"${DIR}/ref/v4.1/SARS-CoV-2.primer.bed"}
 REF_FASTA="${DIR}/ref/v4.1/SARS-CoV-2.reference.fasta"
@@ -21,7 +23,7 @@ MIN_FREQ=0.75
 MIN_QUAL_VAR=20
 MAX_READPAIRS=1000000
 
-conda activate ivar
+micromamba activate ivar
 
 # bgzip gff in needed
 if [ ! -f "${GFF}.gz" ]; then
@@ -76,9 +78,9 @@ fi
 # Annotate variants with VEP
 if [ ! -f "$ID.freebayes.vep.vcf" ]; then
     bgzip -i -f -c $ID.freebayes.vcf > $ID.freebayes.vcf.gz
-    conda activate vep
+    micromamba activate vep
     vep -i $ID.freebayes.vcf.gz --format vcf --gff $GFF.gz --fasta $REF_FASTA -o $ID.freebayes.vep.vcf --vcf --force_overwrite --no_stats --distance 10 --hgvs
-    conda activate ivar
+    micromamba activate ivar
     rm $ID.freebayes.vcf.gz*
 fi
 
@@ -91,14 +93,14 @@ fi
 # Run nextclade
 if [ ! -f "$ID.nextclade.tsv" ] && [ ! -f "$ID.auspice.json" ]; then
     wait
-    conda activate nextclade
+    micromamba activate nextclade
     nextclade --in-order --input-fasta $ID.consensus.fa --input-dataset $REF_NEXTCLADE --output-tsv $ID.nextclade.tsv --output-tree $ID.auspice.json
 fi
 
 # Run pangolin
 if [ ! "$NO_PANGOLIN" = "NO_PANGOLIN" ] && [ ! -f "$ID.pangolin.csv" ]; then
     wait
-    conda activate pangolin
+    micromamba activate pangolin
     pangolin $ID.consensus.fa -o $ID.pangolin_tmp
     cp $ID.pangolin_tmp/lineage_report.csv ./$ID.pangolin.csv
     rm -rf $ID.pangolin_tmp
