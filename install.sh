@@ -8,8 +8,8 @@ fi
 
 # Download reference files
 mkdir -p ref && cd ref
-wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/typing/SARS-CoV-2.types.yaml
-wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/typing/MN908947.3.gff
+wget https://raw.githubusercontent.com/connor-lab/ncov2019-artic-nf/master/typing/SARS-CoV-2.types.yaml
+wget https://raw.githubusercontent.com/connor-lab/ncov2019-artic-nf/master/typing/MN908947.3.gff
 sed -i '/^$/d' MN908947.3.gff
 grep -v '^###' MN908947.3.gff > MN908947.3.gff.mod
 mv MN908947.3.gff.mod MN908947.3.gff
@@ -25,8 +25,8 @@ cd -
 
 # Download some additional scripts
 mkdir -p bin && cd bin
-wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/bin/type_vcf.py
-wget https://github.com/connor-lab/ncov2019-artic-nf/raw/master/bin/qc.py
+wget https://raw.githubusercontent.com/connor-lab/ncov2019-artic-nf/master/bin/type_vcf.py
+wget https://raw.githubusercontent.com/connor-lab/ncov2019-artic-nf/master/bin/qc.py
 wget https://www.epicov.org/content/gisaid_uploader
 cd -
 
