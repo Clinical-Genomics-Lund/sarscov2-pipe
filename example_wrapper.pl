@@ -10,7 +10,8 @@ my $OUTDIR = $ARGV[1];
 my $N_PARALLEL = $ARGV[2];
 my $POST_ANALYSIS_SCRIPT = ($ARGV[3] or 0);
 
-my @files = glob("$INDIR/*_R1_001.fastq.gz");
+#my @files = glob("$INDIR/*_R1_001.fastq.gz");
+my @files = glob("$INDIR/{MTS,VP,DC,EP,LUAA,MAAA}*_R1_001.fastq.gz");
 
 print "source $SCRIPT_ROOT/miniconda3/etc/profile.d/conda.sh\n";
 print "conda activate pangolin\n";
