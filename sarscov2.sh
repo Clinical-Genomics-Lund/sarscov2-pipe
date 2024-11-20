@@ -4,7 +4,7 @@ set -e
 DIR=`dirname $0`
 source $DIR/miniconda3/etc/profile.d/conda.sh
 
-PRIMER_BED=${5:-"${DIR}/ref/SARS-CoV-2.primer.bed"}
+PRIMER_BED=${5:-"${DIR}/ref/v532/SARS-CoV-2.primer.bed"}
 REF_FASTA="${DIR}/ref/SARS-CoV-2.reference.fasta"
 REF_NEXTCLADE="${DIR}/ref/nextclade/sars-cov-2_MN908947"
 GFF="${DIR}/ref/MN908947.3.gff"
